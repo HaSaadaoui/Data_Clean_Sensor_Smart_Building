@@ -30,19 +30,10 @@ try:
         for item in items:
             # Créer une copie de l'élément et ajouter le champ 'Type'
             item_to_insert = item.copy()  # Créer une copie pour ne pas modifier l'original
-            item_to_insert['Type'] = item_to_insert.get('device')  # Ajouter le champ Type
-            #item_to_insert['id'] = item_to_insert.get('ReceivedTimeStamp')  # Ajouter le champ Type
             item_to_insert['id'] = str(uuid.uuid4())  # Génère un UUID comme identifiant
-
-
-
-            # Supprimer le champ 'device' si nécessaire
-            # if 'device' in item_to_insert:
-            #     del item_to_insert['device']  # Décommentez cette ligne si vous voulez retirer le champ 'device'
-
             # Afficher l'élément à insérer
             print(f"Élément à insérer : {json.dumps(item_to_insert, indent=4)}")
-            
+        
             # Insérer directement l'élément dans le conteneur de destination
             try:
                 destination_container.upsert_item(item_to_insert)

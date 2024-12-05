@@ -18,7 +18,8 @@ database = client.get_database_client('SmartBuildingDB-Paris-Chateaudun')
 sensor_container = database.get_container_client('SensorData')
 
 # Requête SQL pour récupérer les données brutes du capteur 'Air_05-01' pour une journée spécifique
-query = 'SELECT c.raw, c.ReceivedTimeStamp, c.metadata FROM c WHERE c.device = "Air_05-01" AND STARTSWITH(c.ReceivedTimeStamp, "2024-10-15")'
+#query = 'SELECT c.raw, c.ReceivedTimeStamp, c.metadata FROM c WHERE c.device = "Air_05-01" AND STARTSWITH(c.ReceivedTimeStamp, "2024-09-30")'
+query = 'SELECT c.raw, c.ReceivedTimeStamp, c.metadata FROM c WHERE c.device = "Air_05-01" AND c.ReceivedTimeStamp >= "2024-01-01"'
 
 # Exécution de la requête pour obtenir les éléments
 items = list(sensor_container.query_items(query=query, enable_cross_partition_query=True))
@@ -83,9 +84,6 @@ for item in items:
             # Renommer les labels et conversion des valeurs
             if data_point['data']['label_name'] == 'temperature':
                 data_point['data']['value'] = round(data_point['data']['value'] * 0.01, 1)
-            elif data_point['data']['label_name'] == 'humidity':
-                data_point['data']['value'] = data_point['data']['value'] * 0.01
-
             # Renommer data_absolute_timestamp
             data_point['ReceivedTimeStamp'] = data_point.pop('data_absolute_timestamp', '')
             # Ajouter le data_point nettoyé à la nouvelle liste
@@ -95,7 +93,7 @@ for item in items:
         # Ajouter les colonnes 'device','deveui','atchReceivedTimeStamp','metadata', et 'id'
         decoded_result['device'] = "Air_05-01"
         decoded_result['deveui'] = "70B3D5E75E01C1FB"
-        decoded_result['BatchReceivedTimeStamp'] = item.get('ReceivedTimeStamp', {})
+        decoded_result['ReceivedTimeStamp'] = item.get('ReceivedTimeStamp', {})
         decoded_result['metadata'] = item.get('metadata', {})
         decoded_result['id'] = str(uuid.uuid4())  
         # Afficher le document avant l'insertion
