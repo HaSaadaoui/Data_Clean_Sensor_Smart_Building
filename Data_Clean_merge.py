@@ -301,7 +301,7 @@ sensor_container = database.get_container_client('SensorData')
 # Conteneur de destination pour les données nettoyées
 destination_container = database.get_container_client('DataCleanCosmos')
 
-# Liste des requêtes SQL par capteur pour récupérer toutes les données
+# Liste des requêtes SQL par capteur pour récupérer les données du conteneur SensorData selon le ReceivedTimeStamp
 
 sensor_query = {
     "Air" : 'SELECT c.raw, c.ReceivedTimeStamp, c.metadata FROM c WHERE c.device = "Air_05-01" AND STARTSWITH(c.ReceivedTimeStamp, "2024-12-19")' ,
