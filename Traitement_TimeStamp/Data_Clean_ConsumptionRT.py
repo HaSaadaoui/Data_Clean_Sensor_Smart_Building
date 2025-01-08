@@ -15,7 +15,7 @@ sensor_container = database.get_container_client('SensorData')
 destination_container = database.get_container_client('DataCleanCosmos')
 
 # Requête SQL pour récupérer toutes les données des autres capteurs
-other_sensors_query = 'SELECT * FROM c WHERE c.device = "LT_05-01" AND c.ReceivedTimeStamp >= "2024-11-18T00:00:00Z"'  # requete pour récuperer les données à partir de Janvier 2024
+other_sensors_query = 'SELECT * FROM c WHERE c.device = "LT_05-01" AND c.ReceivedTimeStamp >= "2024-11-21T00:00:00Z"'  # requete pour récuperer les données à partir de Janvier 2024
 
 try:
     # Récupération des données du premier conteneur

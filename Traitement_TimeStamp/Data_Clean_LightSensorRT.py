@@ -15,7 +15,7 @@ sensor_container = database.get_container_client('SensorData')
 destination_container = database.get_container_client('DataCleanCosmos')
 
 # Requête SQL pour récupérer toutes les données des autres capteurs
-other_sensors_query = 'SELECT * FROM c WHERE c.device in ("TempEx_05-01") AND c.ReceivedTimeStamp >= "2024-11-18"'
+other_sensors_query = 'SELECT * FROM c WHERE c.device in ("Light_05-02","Light_05-01") AND c.ReceivedTimeStamp >= "2024-11-21"'
 #other_sensors_query = 'SELECT * FROM c WHERE c.device = "Light_05-02" AND STARTSWITH(c.ReceivedTimeStamp, "2024-10-10")'
 
 try:
@@ -27,6 +27,7 @@ try:
         for item in items:
             # Créer une copie de l'élément et ajouter le champ 'Type'
             item_to_insert = item.copy()  # Créer une copie pour ne pas modifier l'original
+            item_to_insert['Type'] = item_to_insert.get('device')  # Ajouter le champ Type
             item_to_insert['id'] = str(uuid.uuid4())  # Génère un UUID comme identifiant
 
             # Arrondir le champ ReceivedTimeStamp à la dizaine de minutes la plus proche

@@ -15,7 +15,7 @@ sensor_container = database.get_container_client('SensorData')
 destination_container = database.get_container_client('DataCleanCosmos')
 
 # Requête SQL pour récupérer toutes les données des autres capteurs
-other_sensors_query = 'SELECT * FROM c WHERE c.device in ("Desk_05-01", "Desk_05-02", "Desk_05-03", "Desk_05-04","Desk_05-05", "Desk_05-06", "Desk_05-07", "Desk_05-08", "Desk_05-09", "Desk_05-10", "Desk_05-11", "Desk_05-12","Desk_05-13", "Desk_05-14", "Desk_05-15", "Desk_05-16", "Desk_05-17", "Desk_05-18", "Desk_05-19", "Desk_05-20", "Desk_05-21", "Desk_05-22", "Desk_05-23", "Desk_05-24") AND c.ReceivedTimeStamp >= "2024-11-18"'
+other_sensors_query = 'SELECT * FROM c WHERE c.device in ("Desk_05-01", "Desk_05-02", "Desk_05-03", "Desk_05-04","Desk_05-05", "Desk_05-06", "Desk_05-07", "Desk_05-08", "Desk_05-09", "Desk_05-10", "Desk_05-11", "Desk_05-12","Desk_05-13", "Desk_05-14", "Desk_05-15", "Desk_05-16", "Desk_05-17", "Desk_05-18", "Desk_05-19", "Desk_05-20", "Desk_05-21", "Desk_05-22", "Desk_05-23", "Desk_05-24") AND c.ReceivedTimeStamp >= "2024-12-10"'
 #other_sensors_query = 'SELECT * FROM c WHERE c.device = "Light_05-02" AND STARTSWITH(c.ReceivedTimeStamp, "2024-10-10")'
 
 try:

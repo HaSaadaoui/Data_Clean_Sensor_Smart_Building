@@ -25,7 +25,7 @@ database = client.get_database_client('SmartBuildingDB-Paris-Chateaudun')
 
 # Conteneur source (données brutes)
 sensor_container = database.get_container_client('SensorData')# Requête SQL pour récupérer les données brutes du capteur 'Air_05-01' pour une journée spécifique
-query = 'SELECT c.raw, c.ReceivedTimeStamp, c.metadata FROM c WHERE c.device = "Air_05-01" AND c.ReceivedTimeStamp >= "2024-11-18"'
+query = 'SELECT c.raw, c.ReceivedTimeStamp, c.metadata FROM c WHERE c.device = "Air_05-01" AND c.ReceivedTimeStamp >= "2024-11-21"'
 #query = 'SELECT c.raw, c.ReceivedTimeStamp, c.metadata FROM c WHERE c.device = "Air_05-01" AND c.ReceivedTimeStamp >= "2024-01-01"'
 
 # Exécution de la requête pour obtenir les éléments

@@ -334,5 +334,3 @@ for sensor in sensor_query:
 
     else :
         print("Aucune donnée trouvée pour les autres capteurs dans le conteneur SensorData.")
-  
-

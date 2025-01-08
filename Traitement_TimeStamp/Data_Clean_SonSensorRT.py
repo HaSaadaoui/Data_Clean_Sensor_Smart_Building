@@ -12,7 +12,7 @@ container = database.get_container_client("SensorData")
 destination_container = database.get_container_client('DataCleanCosmos')
 
 # Requête SQL pour récupérer toutes les données avec device = "Son_05-01" ou "Son_05-02"
-device_query = 'SELECT * FROM c WHERE c.device IN ("Son_05-01", "Son_05-02") AND c.ReceivedTimeStamp >= "2024-11-18T00:00:00Z"'
+device_query = 'SELECT * FROM c WHERE c.device IN ("Son_05-01", "Son_05-02") AND c.ReceivedTimeStamp >= "2024-11-21T00:00:00Z"'
 
 def clean_item(item):
     """Function to clean unnecessary fields from the item."""

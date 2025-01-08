@@ -15,19 +15,20 @@ sensor_container = database.get_container_client('SensorData')
 destination_container = database.get_container_client('DataCleanCosmos')
 
 # Requête SQL pour récupérer toutes les données des autres capteurs
-other_sensors_query = 'SELECT * FROM c WHERE c.device in ("Light_05-02","Light_05-01") AND c.ReceivedTimeStamp >= "2024-11-18"'
+other_sensors_query = 'SELECT * FROM c WHERE c.device in ("TempEx_05-01") AND c.ReceivedTimeStamp >= "2024-12-10"'
 #other_sensors_query = 'SELECT * FROM c WHERE c.device = "Light_05-02" AND STARTSWITH(c.ReceivedTimeStamp, "2024-10-10")'
 
 try:
     # Récupération des données du premier conteneur
     items = list(sensor_container.query_items(other_sensors_query, enable_cross_partition_query=True))
+    print(f"Nombre de JSON avant traitement : {len(items)}")
+    processed_items = []  # Liste vide pour éviter le NameError
 
     if items:
         print("Données trouvées dans le conteneur SensorData :")
         for item in items:
             # Créer une copie de l'élément et ajouter le champ 'Type'
             item_to_insert = item.copy()  # Créer une copie pour ne pas modifier l'original
-            item_to_insert['Type'] = item_to_insert.get('device')  # Ajouter le champ Type
             item_to_insert['id'] = str(uuid.uuid4())  # Génère un UUID comme identifiant
 
             # Arrondir le champ ReceivedTimeStamp à la dizaine de minutes la plus proche
@@ -53,10 +54,6 @@ try:
 
             item_to_insert = reordered_item
 
-            # Supprimer le champ 'device' si nécessaire
-            # if 'device' in item_to_insert:
-            #     del item_to_insert['device']  # Décommentez cette ligne si vous voulez retirer le champ 'device'
-
             # Suppression des champs inutiles          
             del item_to_insert['raw']  #  retirer le champ 'raw'
             del item_to_insert['HandledTimeStamp']  #  retirer le champ 'HandledTimeStamp'
@@ -64,16 +61,17 @@ try:
             del item_to_insert['temperature']  #  retirer le champ 'temperature'
             del item_to_insert['battery']  #  retirer le champ 'battery'
            # del item_to_insert['Type']  #  retirer le champ 'Type'
-           
+        
+        print(f"Nombre de JSON après traitement : {len(processed_items)}")
             # Afficher l'élément à insérer
-            print(f"Élément à insérer : {json.dumps(item_to_insert, indent=4)}")
+            #print(f"Élément à insérer : {json.dumps(item_to_insert, indent=4)}")
             
             # Insérer directement l'élément dans le conteneur de destination
-            try:
-                destination_container.upsert_item(item_to_insert)
-                print(f"Élément inséré dans DataCleanCosmos : {item_to_insert['id']}")
-            except exceptions.CosmosHttpResponseError as e:
-                print(f"Erreur lors de l'insertion dans DataCleanCosmos : {e.message}")
+            #try:
+                #destination_container.upsert_item(item_to_insert)
+                #print(f"Élément inséré dans DataCleanCosmos : {item_to_insert['id']}")
+            #except exceptions.CosmosHttpResponseError as e:
+                #print(f"Erreur lors de l'insertion dans DataCleanCosmos : {e.message}")
     else:
         print("Aucune donnée trouvée pour les autres capteurs dans le conteneur SensorData.")
 except exceptions.CosmosHttpResponseError as e:
