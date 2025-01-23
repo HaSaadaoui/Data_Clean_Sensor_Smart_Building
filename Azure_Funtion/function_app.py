@@ -2,24 +2,28 @@ import logging
 import azure.functions as func
 from azure.cosmos import CosmosClient, exceptions
 import json
-import pytz
+# import pytz
 from datetime import datetime, timedelta, timezone
 import constants
 from Data_Clean_merge import *
+import os
+import uuid 
+import subprocess
+from collections import OrderedDict
 
 
 
 app = func.FunctionApp()
 
-@app.timer_trigger(schedule="0 * * * * *", arg_name="myTimer", run_on_startup=False,
+@app.timer_trigger(schedule="0 */1 * * * *", arg_name="myTimer", run_on_startup=False,
               use_monitor=False) 
 def insert_cleanedData_in_DataCleanCosmos(myTimer: func.TimerRequest) -> None:
 
 # Récupérer la chaîne de connexion Cosmos DB et le nom du conteneur depuis les paramètres d'application
-    cosmos_db_connection_string = os.environ["CONNECTION_STRING"]
-    container_name1 = os.environ["CONTAINER_NAME_INPUT"]
-    container_name2 = os.environ["CONTAINER_NAME_OUTPUT"]
-    database_name = os.environ["DATABASE"]
+    cosmos_db_connection_string = os.getenv("CONNECTION_STRING")
+    container_name1 = os.getenv("CONTAINER_NAME_INPUT")
+    container_name2 = os.getenv("CONTAINER_NAME_OUTPUT")
+    database_name = os.getenv("DATABASE")
 # Se connecter à Cosmos DB
     client = CosmosClient.from_connection_string(cosmos_db_connection_string) 
 # Accéder à la base de données (nom de la base de données à spécifier)
@@ -59,12 +63,16 @@ def insert_cleanedData_in_DataCleanCosmos(myTimer: func.TimerRequest) -> None:
             # On fait une boucle sur chacun des documents récupérés 
             for item in items:
 
-                logging.info(f"Affichage du device de l'item : {item["device"]}")
-                logging.info("Execution du cleaning ")
-                device = item["device"].split('_')[0]
+                # logging.info(f"Affichage du device de l'item : {item["device"]}")
+                # logging.info("Execution du cleaning ")
+                # Obligation de spliter cette opération de création de la variable device afin qu'Azure 
+                # puisse l'executer, sinon ERROR
+                device1 = item["device"]
+                device2 = device1.split('_')
+                device = device2[0]
                 cleaning_sensor(device, item, destination_container)
-                logging.info(f"Élément à insérer : {json.dumps(item_to_insert, indent=4)}")
-                logging.info("Cleaning terminé.")
+                # logging.info(f"Élément à insérer : {json.dumps(item_to_insert, indent=4)}")
+                # logging.info("Cleaning terminé.")
             
         else :
             logging.info("Aucun document trouvé")
