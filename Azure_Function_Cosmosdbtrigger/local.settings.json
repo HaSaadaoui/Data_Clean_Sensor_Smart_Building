@@ -1,0 +1,12 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "",
+    "FUNCTIONS_WORKER_RUNTIME": "python",
+    "cosmosdbparischateaudun_DOCUMENTDB": "AccountEndpoint=https://cosmosdb-paris-chateaudun.documents.azure.com:443/;AccountKey=WQjxv3e4hNIOv2I91oLlTObR0PFVSSk3iB7goLJAMLwMEVCzgl98fmueRQEkwxBvqgmyBUmpXnfFACDbeUnUpg==;",
+    "CONTAINER_NAME_INPUT" : "SensorData",
+    "CONTAINER_NAME_OUTPUT" : "TestDataCleanCosmos",
+    "DATABASE" : "SmartBuildingDB-Paris-Chateaudun"
+    
+  }
+}
