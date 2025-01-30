@@ -2,7 +2,7 @@ import logging
 import azure.functions as func
 from azure.cosmos import CosmosClient, exceptions
 import json
-# import pytz
+import pytz
 from datetime import datetime, timedelta, timezone
 import constants
 from Data_Clean_merge import *
@@ -33,44 +33,37 @@ def insert_cleanedData_in_DataCleanCosmos(azcosmosdb: func.DocumentList):
     destination_container = database.get_container_client(container_name2)
 
 
+    # Cette Etape permet de tenir compte du décalage horaire entre Azure et l'heure locale
+        # Par exemple si je souhaite que l'exécution débute le 29/01/2025 à minuit heure locale
+        # Azure aura pour heure 23h:00 et si je vérifie la condition heure_utc >= data_debut
+        # j'empêche Azure de cleaner des données de 23h:00
 
-    # Date de début d'execution de la fonction
+        # Définition de la localisation d'exécution du code
+    local_tz = pytz.timezone('Europe/Paris') 
+        # Définition de la date de début d'execution en heure locale souhaitée
     date_debut = datetime(2025, 1, 29, 0, 0, 0)
-    # heure locale du pc portable
+        # heure locale du pc portable
     heure_locale = datetime.now()
+        # Convertion de l'heure locale en heure UTC
+    heure_locale_avec_tz = local_tz.localize(heure_locale)
+    heure_utc = heure_locale_avec_tz.astimezone(pytz.utc)
 
 
     
-    # Début d'insertion des données ssi la contion date de début de lancement est respecté
-    if heure_locale >= date_debut :
+    # Début d'insertion des données ssi la condition date de début de lancement est respecté
+    if heure_utc >= date_debut :
         for item in azcosmosdb :
 
             logging.info(f"Documents récupérés : {len(item)}")
-    #         # logging.info(f"Documents récupérés : {item['id']}")
 
-    #         logging.info(f"Affichage du device de l'item : {item["device"]}")
-    # #         # outputDocument.set(item)
-    # #         # logging.info("Execution du cleaning ")
-    # #         # Obligation de spliter cette opération de création de la variable device afin qu'Azure 
-    # #         # puisse l'executer, sinon ERROR
+            # Obligation de spliter cette opération de création de la variable device afin qu'Azure 
+            # puisse l'executer, sinon ERROR
             device1 = item["device"]
             device2 = device1.split('_')
             device = device2[0]
             logging.info(f"device : {device}")
+            # Execution du cleaning des données à partir du code Data_Clean_merge.py
             cleaning_sensor(device, item, destination_container)
-    # #         logging.info(f"item_to_insert : {type(item_to_insert)}")
-    # #         logging.info(f"item : {type(item)}")
-    # #         if device != "Air" :
-    # #             outputDocument.set(func.Document(item_to_insert))
-    # #         elif device == "Air":
-                
-    # #             # logging.info(f" dictionnaire 1 : {list_item_to_insert[0]}")
-    # #             for dictionnary in list_item_to_insert:
-    # #                 outputDocument.set(func.Document(dictionnary))
-    # #         #         logging.info(f" type de dictionnary {type(dictionnary)}")
-    # #         # outputDocument.set(item_to_insert)
-    # #             # logging.info(f"Élément à insérer : {json.dumps(item_to_insert, indent=4)}")
-    # #             # logging.info("Cleaning terminé.")
             
     else :
         logging.info("Condition de lancement de la fonction Azure (date et heure) pas rempli")
