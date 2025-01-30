@@ -2,7 +2,7 @@ import logging
 import azure.functions as func
 from azure.cosmos import CosmosClient, exceptions
 import json
-# import pytz
+import pytz
 from datetime import datetime, timedelta, timezone
 import constants
 from Data_Clean_merge import *
@@ -41,10 +41,20 @@ def insert_cleanedData_in_DataCleanCosmos(myTimer: func.TimerRequest) -> None:
    
     logging.info(f"Dernière date de lancement Azure : {Azure_local_time.isoformat()}")
     
-    # Définition de la date de début d'execution de la fonction
-    date_debut = datetime(2025, 1, 28, 00, 00, 0)
-    # heure locale du pc portable
+        # Cette Etape permet de tenir compte du décalage horaire entre Azure et l'heure locale
+        # Par exemple si je souhaite que l'exécution débute le 29/01/2025 à minuit heure locale
+        # Azure aura pour heure 23h:00 et si je vérifie la condition heure_utc >= data_debut
+        # j'empêche Azure de cleaner des données de 23h:00
+
+        # Définition de la localisation d'exécution du code
+    local_tz = pytz.timezone('Europe/Paris') 
+        # Définition de la date de début d'execution en heure locale souhaitée
+    date_debut = datetime(2025, 1, 29, 0, 0, 0)
+        # heure locale du pc portable
     heure_locale = datetime.now()
+        # Convertion de l'heure locale en heure UTC
+    heure_locale_avec_tz = local_tz.localize(heure_locale)
+    heure_utc = heure_locale_avec_tz.astimezone(pytz.utc)
 
     # Ecriture de la requête d'extraction de nouveaux fichiers rajoutés dans le conteneur source
     query_r = "SELECT * FROM c WHERE c.ReceivedTimeStamp >= @Azure_local_time_delta and c.ReceivedTimeStamp<= @Azure_local_time"
@@ -59,7 +69,7 @@ def insert_cleanedData_in_DataCleanCosmos(myTimer: func.TimerRequest) -> None:
 
     
     # Début d'insertion des données ssi la condition date de début de lancement est respecté
-    if heure_locale >= date_debut :
+    if heure_utc >= date_debut :
         # Vérification de l'existence de documents 
         if items:
             logging.info(f"Documents récupérés : {len(items)}")
