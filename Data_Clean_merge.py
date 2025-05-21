@@ -284,11 +284,7 @@ def cleaning_sensor(SensorName, item) :
         
     elif SensorName == "Air" :
        Air_update(item)
-       
-       
-    
-
-
+              
 # Connexion à Cosmos DB
 CONNECTION_STRING = 'AccountEndpoint=https://cosmosdb-paris-chateaudun.documents.azure.com:443/;AccountKey=WQjxv3e4hNIOv2I91oLlTObR0PFVSSk3iB7goLJAMLwMEVCzgl98fmueRQEkwxBvqgmyBUmpXnfFACDbeUnUpg==;'
 
@@ -304,12 +300,12 @@ destination_container = database.get_container_client('DataCleanCosmos')
 # Liste des requêtes SQL par capteur pour récupérer les données du conteneur SensorData selon le ReceivedTimeStamp
 
 sensor_query = {
-    "Air" : 'SELECT c.raw, c.ReceivedTimeStamp, c.metadata FROM c WHERE c.device = "Air_05-01" AND STARTSWITH(c.ReceivedTimeStamp, "2025-04-24")' ,
-    "Consumption" : 'SELECT * FROM c WHERE c.device = "LT_05-01" AND STARTSWITH(c.ReceivedTimeStamp, "2025-04-24")',
-    "Desk" : 'SELECT * FROM c WHERE c.device in ("Desk_05-01", "Desk_05-02", "Desk_05-03", "Desk_05-04","Desk_05-05", "Desk_05-06", "Desk_05-07", "Desk_05-08", "Desk_05-09", "Desk_05-10", "Desk_05-11", "Desk_05-12","Desk_05-13", "Desk_05-14", "Desk_05-15", "Desk_05-16", "Desk_05-17", "Desk_05-18", "Desk_05-19", "Desk_05-20", "Desk_05-21", "Desk_05-22", "Desk_05-23", "Desk_05-24") AND STARTSWITH(c.ReceivedTimeStamp, "2025-04-24")',
-    "Light" : 'SELECT * FROM c WHERE c.device in ("Light_05-02","Light_05-01") AND STARTSWITH(c.ReceivedTimeStamp, "2025-04-24")',
-    "Son" : 'SELECT * FROM c WHERE c.device IN ("Son_05-01", "Son_05-02") AND STARTSWITH(c.ReceivedTimeStamp, "2025-04-24")',
-    "TempEx" : 'SELECT * FROM c WHERE c.device = "TempEx_05-01" AND STARTSWITH(c.ReceivedTimeStamp, "2025-04-24")'
+    "Air" : 'SELECT c.raw, c.ReceivedTimeStamp, c.metadata FROM c WHERE c.device = "Air_05-01" AND STARTSWITH(c.ReceivedTimeStamp, "2025-04-30")' ,
+    "Consumption" : 'SELECT * FROM c WHERE c.device = "LT_05-01" AND STARTSWITH(c.ReceivedTimeStamp, "2025-04-30")',
+    "Desk" : 'SELECT * FROM c WHERE c.device in ("Desk_05-01", "Desk_05-02", "Desk_05-03", "Desk_05-04","Desk_05-05", "Desk_05-06", "Desk_05-07", "Desk_05-08", "Desk_05-09", "Desk_05-10", "Desk_05-11", "Desk_05-12","Desk_05-13", "Desk_05-14", "Desk_05-15", "Desk_05-16", "Desk_05-17", "Desk_05-18", "Desk_05-19", "Desk_05-20", "Desk_05-21", "Desk_05-22", "Desk_05-23", "Desk_05-24") AND STARTSWITH(c.ReceivedTimeStamp, "2025-04-30")',
+    "Light" : 'SELECT * FROM c WHERE c.device in ("Light_05-02","Light_05-01") AND STARTSWITH(c.ReceivedTimeStamp, "2025-04-30")',
+    "Son" : 'SELECT * FROM c WHERE c.device IN ("Son_05-01", "Son_05-02") AND STARTSWITH(c.ReceivedTimeStamp, "2025-04-30")',
+    "TempEx" : 'SELECT * FROM c WHERE c.device = "TempEx_05-01" AND STARTSWITH(c.ReceivedTimeStamp, "2025-04-30")'
 }
 
 # sensor_query = {
